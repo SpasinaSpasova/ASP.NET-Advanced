@@ -39,13 +39,23 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
+    app.UseStatusCodePages();// very ugly design
 }
 else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+//middleware
+app.Use((context, next) =>
+{
+    context.Request.Scheme = "https";
+
+    return next();
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

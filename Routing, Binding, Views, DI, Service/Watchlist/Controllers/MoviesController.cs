@@ -108,5 +108,29 @@ namespace Watchlist.Controllers
             return RedirectToAction(nameof(Watched));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var model = await movieService.GetForEditAsync(id);
+
+            model.Genres = await movieService.GetGenresAsync();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditMovieViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await movieService.EditAsync(model);
+
+            return RedirectToAction(nameof(All));
+        }
+
     }
 }
+ 

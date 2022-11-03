@@ -72,6 +72,19 @@ namespace Watchlist.Services
 
         }
 
+        public async Task EditAsync(EditMovieViewModel model)
+        {
+            var entity = await watchlistDbContext.Movies.FindAsync(model.Id);
+
+            entity.Rating = model.Rating;
+            entity.Director = model.Director;
+            entity.ImageUrl = model.ImageUrl;
+            entity.Title = model.Title;
+            entity.GenreId = model.GenreId;
+
+            await watchlistDbContext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<MovieViewModel>> GetAllAsync()
         {
             return await watchlistDbContext.Movies.Select(m => new MovieViewModel()
@@ -84,6 +97,21 @@ namespace Watchlist.Services
                 Genre = m.Genre.Name
 
             }).ToListAsync();
+        }
+
+        public async Task<EditMovieViewModel> GetForEditAsync(int id)
+        {
+            var movie = await watchlistDbContext.Movies.FindAsync(id);
+
+            return new EditMovieViewModel()
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Director = movie.Director,
+                ImageUrl = movie.ImageUrl,
+                Rating = movie.Rating,
+                GenreId = movie.GenreId,
+            };
         }
 
         public async Task<IEnumerable<Genre>> GetGenresAsync()
